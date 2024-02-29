@@ -1,0 +1,18 @@
+#! /bin/bash
+
+openssl genrsa -out pr.pem 2048
+openssl rsa -pubout -in pr.pem -out pu.pem
+
+sh=$(openssl rand -hex 16)
+echo " Serect text">f.txt
+
+scp pu.pem ashu@10.0.2.7:/home/ashu
+scp pr.pem ashu@10.0.2.7:/home/ashu
+
+openssl dgst -sha256 -sign pr.pem -out sign f.txt
+
+openssl enc -pbkdf2 -aes-256-cbc -in f.txt -out e_f.txt -k $sh
+openssl pkeyutl -encrypt -pubin -inkey pu.pem -in <(echo -n "$sh") -out e_s.txt
+
+scp e_f.txt ashu@10.0.2.7:/home/ashu
+scp e_s.txt ashu@10.0.2.7:/home/ashu
