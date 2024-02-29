@@ -1,0 +1,4 @@
+#! /bin/bash
+openssl pkeyutl -decrypt -inkey pr.pem -in e_s.txt -out d_sss.txt
+openssl enc -pbkdf2 -aes-256-cbc -d -in e_f.txt -out d_ffff.txt -k $(cat d_sss.txt)
+cat d_ffff.txt
